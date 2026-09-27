@@ -73,6 +73,7 @@
     "lint": "eslint",
     "generate:component": "node scripts/generate-component.js",
     "build:lib": "tsup && node scripts/build-css.mjs",
+    "prepare": "npm run build:lib",
     "prepack": "npm run build:lib",
     "pack:lib": "node -e \"require('node:fs').mkdirSync('pack',{recursive:true})\" && npm pack --pack-destination ./pack",
     "check:consumer": "node scripts/check-consumer.mjs"
