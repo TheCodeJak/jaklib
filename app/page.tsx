@@ -1,5 +1,9 @@
 "use client";
 
+import { Avatar } from "@/components/Avatar";
+import { Radio, RadioGroup } from "@/components/Radio/Radio";
+import { Spinner } from "@/components/Spinner";
+import { Textarea } from "@/components/Textarea";
 import {
   Button,
   Card,
@@ -48,6 +52,7 @@ const HomePage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [check, setCheck] = useState(true);
+  const [radio, setRadio] = useState("jakob");
 
   return (
     <div className="min-h-screen bg-bg">
@@ -58,6 +63,28 @@ const HomePage = () => {
             Jede Komponente einzeln, ohne Dashboard-Kontext.
           </p>
         </div> */}
+
+        <Showcase title="Textarea">
+          <div className="flex gap-4">
+            <Textarea label="Dein Kommentar"></Textarea>
+            <Spinner />
+          </div>
+        </Showcase>
+
+        <Showcase title="Avatar">
+          <div className="flex gap-4">
+            <Avatar name="Jakob Jung"></Avatar>
+          </div>
+        </Showcase>
+
+        <Showcase title="RadioButton">
+          <div>
+            <RadioGroup name="x" onChange={setRadio} value={radio}>
+              <Radio value="jakob" label="Jakob" />
+              <Radio value="laura" label="Laura" />
+            </RadioGroup>
+          </div>
+        </Showcase>
 
         <Showcase title="Button" description="Varianten, Größen, Zustände">
           <div className="flex flex-wrap gap-2">

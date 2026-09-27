@@ -5,10 +5,10 @@ import path from "path";
 const [name, targetDir] = process.argv.slice(2);
 
 if (!name || !targetDir) {
-  console.error("\x1b[31mFehler: Bitte geben Sie Name und Zielverzeichnis an.\x1b[0m");
-  console.log(
-    "Beispiel: npm run generate:component -- Card ./src/components",
+  console.error(
+    "\x1b[31mFehler: Bitte geben Sie Name und Zielverzeichnis an.\x1b[0m",
   );
+  console.log("Beispiel: npm run generate:component -- Card ./src/components");
   process.exit(1);
 }
 
@@ -84,7 +84,7 @@ export interface ${name}Props extends HTMLAttributes<HTMLElement> {
 // ---------------------------------------------------------
 // 3. React Component Vorlage
 // ---------------------------------------------------------
-const contentComponent = `import clsx from "clsx";
+const contentComponent = `import { cn } from "@/lib/cn";
 import styles from "./${name}.module.css";
 import type { ${name}Props } from "./${name}.types";
 
@@ -114,7 +114,7 @@ export function ${name}({
   return (
     {/* HIER ANPASSEN: Das Basis-HTML-Element (div, button, a) anpassen */}
     <div
-      className={clsx(
+      className={cn(
         styles.base,
         sizeMap[size],
         variantMap[variant],
