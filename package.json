@@ -1,6 +1,28 @@
 {
   "name": "jaklib",
   "version": "0.1.0",
+  "private": true,
+  "description": "React-Komponenten-Bibliothek mit Tailwind CSS 4, Light/Dark-Mode-Tokens und eigenständigem CSS-Bundle.",
+  "license": "UNLICENSED",
+  "author": {
+    "name": "Jakob Jung",
+    "url": "https://github.com/TheCodeJak"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheCodeJak/jaklib.git"
+  },
+  "homepage": "https://github.com/TheCodeJak/jaklib#readme",
+  "bugs": {
+    "url": "https://github.com/TheCodeJak/jaklib/issues"
+  },
+  "keywords": [
+    "react",
+    "components",
+    "design-system",
+    "tailwindcss",
+    "ui-library"
+  ],
   "sideEffects": [
     "**/*.css"
   ],
