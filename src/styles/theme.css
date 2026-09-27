@@ -1,0 +1,11 @@
+/* ============================================
+   Voller Tailwind-Kontext.
+   Ziel von `@reference` in allen CSS-Modules und
+   Basis der Demo-App (globals.css).
+   Wird selbst nie ausgeliefert — `@reference`
+   erzeugt keine Ausgabe, und das Paket-CSS wird
+   aus lib.css gebaut.
+   ============================================ */
+@import "./tokens.css";
+@import "tailwindcss";
+@import "./theme-map.css";

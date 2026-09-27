@@ -1,0 +1,58 @@
+{
+  "name": "jaklib",
+  "version": "0.1.0",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./styles.css": "./dist/index.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.5.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "class-variance-authority": "^0.7.1",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.1",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "formik": "^2.4.9",
+    "next": "^16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "tailwindcss": "^4",
+    "tsup": "^8.5.1",
+    "typescript": "^5",
+    "yup": "^1.7.1"
+  },
+  "scripts": {
+    "dev": "next dev --turbopack --port 3001",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "generate:component": "node scripts/generate-component.js",
+    "build:lib": "tsup && node scripts/build-css.mjs",
+    "prepack": "npm run build:lib",
+    "pack:lib": "node -e \"require('node:fs').mkdirSync('pack',{recursive:true})\" && npm pack --pack-destination ./pack",
+    "check:consumer": "node scripts/check-consumer.mjs"
+  }
+}

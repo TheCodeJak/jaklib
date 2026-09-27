@@ -1,0 +1,89 @@
+@reference "../../styles/theme.css";
+
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.wrapperDisabled {
+  cursor: not-allowed;
+}
+
+.wrapperDisabled .labelText {
+  opacity: var(--disabled-opacity);
+}
+
+.track {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--switch-track-w);
+  height: var(--switch-track-h);
+  border-radius: var(--radius-full);
+  background-color: var(--border);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease-in-out,
+    box-shadow 0.15s;
+}
+
+.track:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+.track:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}
+
+.trackOn {
+  @apply bg-primary;
+}
+
+/* Dot — gleicher Abstand oben/unten/zur eigenen Seite */
+.thumb {
+  position: absolute;
+  top: var(--switch-thumb-offset);
+  left: var(--switch-thumb-offset);
+  width: calc(var(--switch-track-h) - 2 * var(--switch-thumb-offset));
+  height: calc(var(--switch-track-h) - 2 * var(--switch-thumb-offset));
+  border-radius: var(--radius-full);
+  background-color: var(--white);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.25s ease-in-out;
+  z-index: 1;
+}
+
+.trackOn .thumb {
+  transform: translateX(calc(var(--switch-track-w) - var(--switch-track-h)));
+}
+
+/* Text — immer auf der Seite ohne Dot */
+.state {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.trackOn .state {
+  right: auto;
+  left: var(--space-2);
+  color: var(--primary-fg);
+}
+
+.labelText {
+  min-width: 75px;
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text);
+  user-select: none;
+}

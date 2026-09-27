@@ -1,0 +1,198 @@
+/* ============================================
+   Overlay — Scrim, Positionierung, Sichtbarkeit
+   ============================================ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: var(--overlay);
+  backdrop-filter: blur(var(--overlay-blur));
+
+  /* geschlossen: erst ausblenden, dann aus dem Fokus-/A11y-Baum nehmen */
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0s linear 0.2s;
+}
+
+.isOpen {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.2s ease,
+    visibility 0s;
+}
+
+/* Sheet-Overlay: klebt am unteren Rand. Die visibility-Verzögerung muss
+   mindestens so lang sein wie die Slide-Animation, sonst wird sie abgeschnitten. */
+.overlaySheet {
+  place-items: end center;
+  padding: 0;
+  transition:
+    opacity 0.3s ease,
+    visibility 0s linear 0.3s;
+}
+
+.overlaySheet.isOpen {
+  transition:
+    opacity 0.3s ease,
+    visibility 0s;
+}
+
+/* ============================================
+   Dialog-Wrapper — Breite und Bewegung,
+   die Fläche kommt von Card
+   ============================================ */
+.dialog {
+  display: flex;
+  max-height: 85dvh;
+  transition: transform 0.2s ease;
+}
+
+/* ---- Variante: zentrierter Dialog ---- */
+.centered {
+  transform: translateY(8px) scale(0.98);
+}
+
+.isOpen .centered {
+  transform: none;
+}
+
+/* ---- Variante: Bottom-Sheet ---- */
+.sheet {
+  transform: translateY(100%);
+  transition: transform 0.3s ease-out;
+}
+
+.isOpen .sheet {
+  transform: none;
+}
+
+/* Während des Ziehens folgt das Sheet dem Finger ohne Nachlauf */
+.dragging {
+  transition: none;
+}
+
+/* ---- Sizes ---- */
+.sm {
+  width: min(100%, 24rem);
+}
+.md {
+  width: min(100%, 32rem);
+}
+.lg {
+  width: min(100%, 48rem);
+}
+
+/* ============================================
+   Inhalt
+   ============================================ */
+
+/* Card an die Dialoghöhe binden, damit .body scrollt statt zu überlaufen */
+.panel {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panelSheet {
+  border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+  border-bottom: none;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.handle {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-3) 0 var(--space-1);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.handle:active {
+  cursor: grabbing;
+}
+
+.handleBar {
+  width: var(--space-10);
+  height: var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--border);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+}
+
+.headerSheet {
+  padding-top: var(--space-2);
+}
+
+.title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-tight);
+  color: var(--text);
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-5);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--text);
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+}
+
+/* Doppelte Klasse: schlägt Buttons `min-width` unabhängig von der
+   Reihenfolge, in der die CSS-Module gebündelt werden. */
+.close.close {
+  min-width: 0;
+  width: var(--h-sm);
+  padding: 0;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.close.close:hover {
+  color: var(--destructive);
+}
+
+.closeIcon {
+  display: inline-flex;
+  width: var(--space-5);
+  height: var(--space-5);
+}
+
+.closeIcon > svg {
+  width: 100%;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .dialog {
+    transition: none;
+  }
+}

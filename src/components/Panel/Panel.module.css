@@ -1,0 +1,17 @@
+.header {
+  padding: var(--space-1) var(--space-2);
+}
+
+.content {
+  overflow-y: auto;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+
+  background-color: var(--input-bg);
+  padding: var(--space-1) var(--space-2);
+}
+
+.footer {
+  padding: var(--space-1) var(--space-2);
+}

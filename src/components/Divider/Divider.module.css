@@ -1,0 +1,7 @@
+@reference "../../styles/theme.css";
+
+.divider {
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px solid var(--border);
+}

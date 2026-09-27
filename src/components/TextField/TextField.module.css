@@ -1,0 +1,42 @@
+@reference "../../styles/theme.css";
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--input-label);
+}
+
+.base {
+  width: 100%;
+  height: var(--h-md);
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-md);
+  outline-style: none;
+  font-size: var(--text-base);
+  line-height: 1;
+  padding: 0 var(--space-4);
+  color: var(--text);
+  transition:
+    border 0.25s,
+    box-shadow 0.25s;
+}
+
+.base::placeholder {
+  color: var(--text-muted);
+}
+
+.base:hover:not(:disabled) {
+  border: 1px solid var(--primary);
+}
+
+.base:focus {
+  border: 1px solid var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+.base:disabled {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}

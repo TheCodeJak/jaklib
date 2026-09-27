@@ -1,0 +1,137 @@
+@reference "../../styles/theme.css";
+
+.base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-medium);
+  line-height: 1;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    opacity 0.15s,
+    box-shadow 0.15s;
+}
+
+.base:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+.base:disabled {
+  cursor: not-allowed;
+}
+
+/* Gefüllte Varianten: die Fläche wird gegen die aktuelle --surface gemischt,
+   nicht per opacity mit dem Hintergrund verrechnet. Sonst entsteht je nach
+   Theme ein zufälliges Ergebnis statt einer bewusst gedämpften Farbe — auf
+   Weiß ein blasses Pastell, auf dunklem Grund ein schmutziges Mischbraun. */
+.primary:disabled,
+.secondary:disabled,
+.destructive:disabled,
+.success:disabled {
+  background-color: color-mix(in srgb, var(--btn-bg) 40%, var(--surface));
+  color: color-mix(in srgb, var(--btn-fg) 55%, var(--surface));
+  box-shadow: none;
+}
+
+/* Ghost/Text haben keine Fläche zum Vermischen — opacity ist hier unbedenklich. */
+.ghost:disabled,
+.text:disabled {
+  opacity: var(--disabled-opacity);
+}
+
+.sm {
+  height: var(--h-sm);
+  padding: 0 var(--space-3);
+  font-size: var(--text-sm);
+  min-width: 100px;
+}
+
+.md {
+  height: var(--h-md);
+  padding: 0 var(--space-5);
+  font-size: var(--text-base);
+  min-width: 140px;
+}
+
+.lg {
+  height: var(--h-lg);
+  padding: 0 var(--space-6);
+  font-size: var(--text-lg);
+  min-width: 180px;
+}
+
+.primary {
+  --btn-bg: var(--primary);
+  --btn-fg: var(--primary-fg);
+  @apply bg-primary text-primary-fg;
+  box-shadow:
+    0 5px 10px -3px var(--primary-shadow),
+    0 4px 4px -4px var(--primary-shadow);
+  transition:
+    background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.primary:hover:not(:disabled) {
+  @apply bg-primary-hover;
+  box-shadow:
+    0 5px 10px -3px var(--primary-shadow-hover),
+    0 4px 4px -4px var(--primary-shadow-hover);
+}
+
+.secondary {
+  --btn-bg: var(--secondary);
+  --btn-fg: var(--secondary-fg);
+  background-color: var(--secondary);
+  color: var(--secondary-fg);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: var(--secondary-hover);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.ghost:hover:not(:disabled) {
+  background-color: var(--ghost-hover);
+}
+
+.text {
+  background: transparent;
+  color: var(--text);
+  border: none;
+}
+
+.text:hover:not(:disabled) {
+  background-color: var(--ghost-hover);
+}
+
+.destructive {
+  --btn-bg: var(--destructive);
+  --btn-fg: var(--destructive-fg);
+  background-color: var(--destructive);
+  color: var(--destructive-fg);
+}
+
+.destructive:hover:not(:disabled) {
+  background-color: var(--destructive-hover);
+}
+
+.success {
+  --btn-bg: var(--success);
+  --btn-fg: var(--success-fg);
+  background-color: var(--success);
+  color: var(--success-fg);
+}
+
+.success:hover:not(:disabled) {
+  background-color: var(--success-hover);
+}

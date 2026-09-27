@@ -1,0 +1,221 @@
+/* ============================================
+   Primitives — rohe Werte, nie direkt in
+   Komponenten verwenden
+   ============================================ */
+:root {
+  /* Brand (Orange) */
+  --brand: #ff8904;
+  --brand-deep: #ea6c0d;
+  --brand-hover: rgba(255, 255, 255, 0.07);
+
+  /* Cobalt (Blau-Akzent) */
+  --cobalt: #2e527a;
+  --cobalt-light: #3a6494;
+  --cobalt-dark: #1e3a5f;
+
+  /* Cream */
+  --cream: #fff1e0;
+
+  /* Sage (Erfolg) */
+  --sage: #43b154;
+
+  /* Danger (Fehler) */
+  --danger: #e24b4a;
+  --danger-deep: #c43f3e;
+
+  /* Ink (helle Neutraltöne) */
+  --ink-900: #111827;
+  --ink-600: #6b7280;
+  --ink-400: #9ca3af;
+  --ink-300: #d1d5db;
+  --ink-100: #f3f4f6;
+  --ink-50: #f9fafb;
+
+  /* Void (dunkle Oberflächen) */
+  --void-950: #020c20;
+  --void-800: #0f1f35;
+  --void-700: #162840;
+
+  /* Zinc (echte Neutraltöne für dunkle Flächen, z.B. Secondary im Dark Mode —
+     bewusst getrennt von Void, das einen Blaustich für Sidebar/Akzente trägt) */
+  --zinc-750: #2a2a2a;
+  --zinc-650: #333333;
+
+  --white: #ffffff;
+
+  /* ============================================
+     Semantische Tokens — Light Mode
+     ============================================ */
+
+  --background: var(--ink-50);
+  --surface: var(--white);
+  --border: var(--ink-300);
+  --text: var(--ink-900);
+  --text-muted: var(--ink-600);
+
+  --primary: var(--brand);
+  --primary-hover: var(--brand-deep);
+  --primary-fg: var(--cream);
+  --primary-shadow: color-mix(in srgb, var(--brand) 30%, transparent);
+  --primary-shadow-hover: color-mix(in srgb, var(--brand) 50%, transparent);
+  /* Leuchtender Fokus-Ring für Button/TextField/Dropdown/Switch — auf Weiß
+     reicht wenig Deckkraft, sonst wirkt er sofort schmutzig-grau. */
+  --focus-ring: color-mix(in srgb, var(--brand) 30%, transparent);
+
+  --secondary: var(--ink-100);
+  --secondary-hover: var(--ink-300);
+  --secondary-fg: var(--ink-900);
+
+  --ghost-hover: var(--ink-100);
+
+  --destructive: var(--danger);
+  --destructive-hover: var(--danger-deep);
+  --destructive-fg: var(--white);
+
+  --success: var(--sage);
+  --success-hover: color-mix(in srgb, var(--sage) 85%, black);
+  --success-fg: var(--white);
+
+  --input-bg: var(--white);
+  --input-border: var(--ink-300);
+  --input-label: var(--ink-400);
+  --input-focus: var(--brand);
+
+  --sidebar-bg: var(--ink-300);
+  --sidebar-fg: var(--ink-50);
+  --sidebar-active: var(--cobalt);
+  --sidebar-hover: var(--cobalt-dark);
+  --sidebar-border: var(--cobalt-dark);
+
+  /* Overlay (Modal, Dialog) */
+  --overlay: rgb(0 0 0 / 0.45);
+  --overlay-blur: 3px;
+
+  /* Layer */
+  --z-modal: 1000;
+
+  --disabled-opacity: 0.4;
+
+  --shadow-sm:
+    0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.06);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
+
+  /* Switch */
+  --switch-track-w: 4.25rem;
+  --switch-track-h: 2rem;
+  --switch-thumb-offset: 4px;
+
+  /* Interactive element heights (sm/md/lg grid) */
+  --h-sm: 36px;
+  --h-md: 44px;
+  --h-lg: 54px;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Typography */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-loose: 1.75;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-full: 9999px;
+}
+
+/* ============================================
+   Semantische Tokens — Dark Mode
+   Folgt automatisch der System-Einstellung
+   (prefers-color-scheme).
+   ============================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #111212;
+    --surface: #1f1f1f;
+    --border: #363636;
+    --text: var(--cream);
+    --text-muted: var(--ink-400);
+
+    --primary: var(--brand);
+    --primary-hover: var(--brand-deep);
+    --primary-fg: var(--cream);
+    --primary-shadow: color-mix(in srgb, var(--brand) 25%, transparent);
+    --primary-shadow-hover: color-mix(in srgb, var(--brand) 40%, transparent);
+    /* Höhere Deckkraft als im Light Mode: auf dunklem Grund braucht Orange
+       mehr Sättigung, um überhaupt als Leuchten zu erscheinen statt zu
+       verschwinden — bewusst eigens kalibriert, keine Invertierung. */
+    --focus-ring: color-mix(in srgb, var(--brand) 45%, transparent);
+
+    /* Neutral wie im Light Mode (Rolle: gedämpfter Button), keine eigene
+       Akzentfarbe — Cobalt bleibt der Sidebar vorbehalten. */
+    --secondary: var(--zinc-750);
+    --secondary-hover: var(--zinc-650);
+    --secondary-fg: var(--cream);
+
+    --ghost-hover: var(--brand-hover);
+
+    --destructive: var(--danger);
+    --destructive-hover: var(--danger-deep);
+    --destructive-fg: var(--white);
+
+    --success: var(--sage);
+    --success-hover: color-mix(in srgb, var(--sage) 85%, black);
+    --success-fg: var(--white);
+
+    --input-bg: #22201b;
+    --input-border: #464646;
+    --input-label: var(--ink-400);
+    --input-focus: var(--brand);
+
+    --sidebar-bg: #0f0f0f;
+    --sidebar-fg: var(--cream);
+    --sidebar-active: var(--cobalt);
+    --sidebar-hover: var(--void-700);
+    --sidebar-border: var(--void-700);
+
+    --overlay: rgb(0 0 0 / 0.65);
+
+    --disabled-opacity: 0.35;
+
+    --shadow-sm:
+      0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.2);
+    --shadow-md:
+      0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+    --shadow-lg:
+      0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
+    --shadow-xl:
+      0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+  }
+}

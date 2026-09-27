@@ -1,0 +1,19 @@
+/* ============================================
+   Eigenstaendiges Paket-CSS — Quelle von dist/index.css.
+
+   Bewusst ohne Preflight: der Reset des Konsumenten
+   bleibt unangetastet. Ausgeliefert werden nur die
+   Utilities, die in src/ tatsaechlich vorkommen
+   (`source("../src")`), damit die Komponenten auch
+   ohne Tailwind beim Konsumenten korrekt aussehen.
+
+   tokens.css laeuft bewusst ungelayert und damit
+   nach Tailwinds Default-Theme: unsere Tokens gewinnen.
+   ============================================ */
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source("../src");
+
+@import "./styles/tokens.css";
+@import "./styles/theme-map.css";

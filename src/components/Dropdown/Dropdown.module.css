@@ -1,0 +1,123 @@
+@reference "../../styles/theme.css";
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--input-label);
+}
+
+.wrapper {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  height: var(--h-md);
+  padding: 0 var(--space-4);
+  font-size: var(--text-base);
+  line-height: 1;
+  background-color: var(--input-bg);
+  color: var(--text);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  position: relative;
+  z-index: 50;
+  transition:
+    border-radius 0.1s,
+    border 0.25s,
+    box-shadow 0.2s;
+}
+
+.trigger:hover:not(:disabled) {
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--primary);
+  box-shadow:
+    0 5px 10px -3px var(--primary-shadow),
+    0 4px 4px -4px var(--primary-shadow);
+}
+
+.trigger:focus-visible {
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+.arrow {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+    clip-path: inset(0 0 100% 0 round var(--radius-xl));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0% 0 round var(--radius-xl));
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0% 0 round var(--radius-xl));
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+    clip-path: inset(0 0 100% 0 round var(--radius-xl));
+  }
+}
+
+.list {
+  position: absolute;
+  top: calc(100% - 16px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 18px var(--space-1) var(--space-1);
+  list-style: none;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  z-index: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  animation: slideDown 0.2s ease-in-out forwards;
+}
+
+.listClosing {
+  animation: slideUp 0.2s ease-in-out forwards;
+}
+
+.option {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-xl);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.option:hover {
+  background-color: var(--ghost-hover);
+}
+
+.optionSelected {
+  background: linear-gradient(to right, var(--primary), #fdb848);
+  color: var(--primary-fg);
+}
