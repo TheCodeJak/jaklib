@@ -22,6 +22,10 @@
     box-shadow 0.25s;
 }
 
+.baseError {
+  border: 1px solid var(--danger);
+}
+
 .base::placeholder {
   color: var(--text-muted);
 }
@@ -39,4 +43,9 @@
 .base:disabled {
   opacity: var(--disabled-opacity);
   cursor: not-allowed;
+}
+
+.error {
+  font-size: var(--text-sm);
+  color: var(--danger);
 }

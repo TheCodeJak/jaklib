@@ -5,4 +5,5 @@ export interface TextFieldProps extends Omit<
   "size"
 > {
   label?: string;
+  error?: string;
 }

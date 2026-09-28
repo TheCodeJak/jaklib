@@ -2,8 +2,8 @@
 
 import { Avatar } from "@/components/Avatar";
 import { Radio, RadioGroup } from "@/components/Radio/Radio";
-import { Spinner } from "@/components/Spinner";
 import { Textarea } from "@/components/Textarea";
+import { TextField as FormikTextField } from "@/formik/TextField";
 import {
   Button,
   Card,
@@ -13,7 +13,9 @@ import {
   Switch,
   TextField,
 } from "@/index";
+import { Form, Formik } from "formik";
 import { useState, type ReactNode } from "react";
+import * as yup from "yup";
 
 function Showcase({
   title,
@@ -64,10 +66,33 @@ const HomePage = () => {
           </p>
         </div> */}
 
+        <Showcase title="Formik">
+          <Formik
+            initialValues={{ name: "Jakob" }}
+            validationSchema={
+              yup.object({
+                name: yup.string().required("Name ist erforderlich"),
+              })
+            }
+            onSubmit={(values) => console.log(values)}
+          >
+            {() => (
+              <Form>
+                <FormikTextField label="Name" name="name" />
+                <Dropdown label="Wähle Option">
+                  <option value="1">1</option>
+                </Dropdown>
+                <Button type="submit" className="mt-2">
+                  Absenden
+                </Button>
+              </Form>
+            )}
+          </Formik>
+        </Showcase>
+
         <Showcase title="Textarea">
           <div className="flex gap-4">
             <Textarea label="Dein Kommentar"></Textarea>
-            <Spinner />
           </div>
         </Showcase>
 
@@ -133,12 +158,11 @@ const HomePage = () => {
           <Dropdown
             label="Wähle Option"
             placeholder="Auswählen"
-            options={[
-              { value: "a", label: "Option A" },
-              { value: "b", label: "Option B" },
-              { value: "c", label: "Option C" },
-            ]}
-          />
+          >
+            <option value="a">Option A</option>
+            <option value="b">Option B</option>
+            <option value="c">Option C</option>
+          </Dropdown>
         </Showcase>
 
         {/* <Showcase title="Folder">

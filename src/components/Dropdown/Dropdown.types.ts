@@ -1,10 +1,12 @@
-type Option = { value: string; label: string };
+import { ReactElement } from "react";
+import { OptionProps } from "./Option";
 
 export interface DropdownProps {
   label: string;
-  options: Option[];
+  children: ReactElement<OptionProps> | ReactElement<OptionProps>[];
   initialValue?: string;
   placeholder?: string;
   onChange?: (value: string) => void;
   className?: string;
+  error?: string;
 }
