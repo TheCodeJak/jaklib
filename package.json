@@ -43,10 +43,10 @@
     "dist"
   ],
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "formik": "^2.4.0",
     "next": ">=13",
-    "formik": "^2.4.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "peerDependenciesMeta": {
     "next": {
@@ -71,6 +71,7 @@
     "eslint-plugin-unused-imports": "^4.4.1",
     "formik": "^2.4.9",
     "next": "^16.3.6",
+    "postcss": "^8.5.28",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "tailwindcss": "^4",
@@ -84,10 +85,11 @@
     "start": "next start",
     "lint": "eslint",
     "generate:component": "node scripts/generate-component.js",
-    "build:lib": "tsup && node scripts/build-css.mjs",
+    "build:lib": "tsup && node scripts/build-css.mjs && node scripts/verify-css.mjs",
     "prepare": "npm run build:lib",
     "prepack": "npm run build:lib",
     "pack:lib": "node -e \"require('node:fs').mkdirSync('pack',{recursive:true})\" && npm pack --pack-destination ./pack",
-    "check:consumer": "node scripts/check-consumer.mjs"
+    "check:consumer": "node scripts/check-consumer.mjs",
+    "verify:css": "node scripts/verify-css.mjs"
   }
 }

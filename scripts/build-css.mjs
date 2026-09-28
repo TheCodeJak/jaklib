@@ -20,19 +20,10 @@ import tailwind from "@tailwindcss/postcss";
 // den globalen Tokens in dist/index.css gemergt werden, sonst fehlen z.B.
 // die TextField-Styles aus formik.css komplett im veroeffentlichten Bundle.
 //
-// formik.css ist inhaltlich fast eine Kopie von core.css: die formik-Wrapper
-// importieren die Kernkomponenten ueber das "@/components"-Barrel, wodurch
-// esbuild denselben Modul-CSS-Block noch einmal fuer den formik-Entry
-// emittiert. WICHTIG: esbuilds lokale Namensvergabe ist dabei zwischen den
-// beiden Entries nicht deterministisch — je nach Build landet z.B.
-// ".TextField_base" in beiden Dateien identisch, oder formik.css bekommt
-// ".TextField_base2" (Kollisionsaufloesung), und GENAU dieser Klassenname
-// wird dann auch im kompilierten formik.js verwendet. Wir koennen also nicht
-// zuverlaessig deduplizieren (welcher Name "der richtige" ist, steht erst
-// nach dem jeweiligen Build fest) — beide Varianten muessen in dist/index.css
-// landen, sonst failed genau die Haelfte der Builds mit unstyled Feldern.
-// Einfaches Aneinanderhaengen ist daher absichtlich: doppelte, identische
-// Regeln sind gueltiges CSS und harmlos.
+// formik importiert die Kernkomponenten per Plugin extern aus jaklib/core
+// (siehe tsup.config.ts) und erzeugt daher meist gar keine eigene formik.css.
+// Existiert sie doch, wird sie einfach mit angehaengt; scripts/verify-css.mjs
+// prueft anschliessend, dass jede vom JS verwendete Klasse im Bundle liegt.
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const entry = path.join(root, "src", "lib.css");
@@ -44,8 +35,14 @@ const { css: globalCss } = await postcss([tailwind()]).process(source, {
   to: out,
 });
 
+// Global statt nur am Dateiende: ein einziger uebrig gebliebener Kommentar
+// mitten im gemergten Bundle laesst Consumer-Parser (Turbopack/lightningcss)
+// mit "Invalid empty selector" abbrechen. Das Tailwind-Banner steckt ebenfalls
+// in den tsup-Ausgaben und wuerde sonst pro Entry doppelt im Bundle landen.
 const stripSourceMapComment = (css) =>
-  css.replace(/\/\*# sourceMappingURL=.*?\*\/\s*$/, "");
+  css
+    .replace(/\/\*# sourceMappingURL=[^*]*\*\//g, "")
+    .replace(/\/\*! tailwindcss [^*]*\*\//g, "");
 
 // Jede der beiden Entry-CSS-Dateien existiert nur, wenn der jeweilige Entry
 // ueberhaupt CSS-Module importiert.

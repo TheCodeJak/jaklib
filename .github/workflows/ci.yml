@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # `prepare` baut die Lib bereits (tsup + build-css + verify-css).
+      - run: npm ci
+
+      - run: npm run lint
+
+      # Baut erneut und bricht ab, wenn dist/index.css fehlerhaft ist
+      # (Parse-Fehler, Kommentar-Reste, fehlende/unlayered Komponentenklassen).
+      - run: npm run build:lib
+
+      # Frisches Next-Projekt mit Tailwind, jaklib/core + jaklib/formik und
+      # Pruefung der Layer im ausgelieferten CSS.
+      - run: npm run check:consumer

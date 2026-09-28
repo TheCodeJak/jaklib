@@ -1,4 +1,21 @@
-﻿import { defineConfig } from "tsup";
+﻿import type { Plugin } from "esbuild";
+import { defineConfig } from "tsup";
+
+// Die Formik-Wrapper importieren die Kernkomponenten über "@/components".
+// Würde esbuild sie einbündeln, entstünde in formik.js eine zweite Kopie samt
+// eigener CSS-Modul-Klassen (TextField_base2 ...), deren Namen je Format
+// (ESM/CJS) unterschiedlich ausfallen und nie zum gemergten dist/index.css
+// passen. Stattdessen zeigt der Import auf das veröffentlichte jaklib/core:
+// eine Komponenteninstanz, eine Klassenvergabe.
+const coreAsExternal: Plugin = {
+  name: "core-as-external",
+  setup(build) {
+    build.onResolve({ filter: /^@\/components$/ }, () => ({
+      path: "jaklib/core",
+      external: true,
+    }));
+  },
+};
 
 export default defineConfig({
   entry: {
@@ -17,6 +34,7 @@ export default defineConfig({
   // sonst bekäme der Consumer zwei Formik-Instanzen (eigene + gebündelte).
   external: ["react", "react-dom", "next", "next/*", "formik"],
   injectStyle: false,
+  esbuildPlugins: [coreAsExternal],
   loader: { ".css": "local-css" },
   banner: { js: '"use client";' },
 });

@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import { rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import postcss from "postcss";
 import { fileURLToPath } from "node:url";
 
 // Prüft, ob das gepackte jaklib in einem frischen Next-Projekt baut.
@@ -78,8 +79,15 @@ export default nextConfig;
     2,
   ),
 
+  // Wie im echten Consumer: eigenes Tailwind, jaklib-CSS zuerst, dann globals.css.
+  "postcss.config.mjs": `export default { plugins: { "@tailwindcss/postcss": {} } };
+`,
+  "app/globals.css": `@import "tailwindcss";
+`,
+
   // CSS genau einmal, hier.
   "app/layout.tsx": `import "jaklib/styles.css";
+import "./globals.css";
 import type { ReactNode } from "react";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -92,15 +100,40 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 `,
 
   // Server Component importiert die Lib direkt: prüft, dass das "use client"-Banner greift.
-  "app/page.tsx": `import { Button, Card } from "jaklib";
+  // className="min-h-0" ist der Regressionstest fuer @layer components: Tailwind-
+  // Utilities muessen Komponentenstile ueberschreiben koennen.
+  "app/page.tsx": `import { Button, Card } from "jaklib/core";
 import Counter from "./Counter";
+import FormikDemo from "./FormikDemo";
 
 export default function Page() {
   return (
-    <Card>
+    <Card className="min-h-0">
       <Button>Klick</Button>
       <Counter />
+      <FormikDemo />
     </Card>
+  );
+}
+`,
+
+  // jaklib/formik (eigener Entry, formik als Peer-Dependency des Consumers).
+  "app/FormikDemo.tsx": `"use client";
+
+import { Formik, Form } from "formik";
+import { Dropdown, TextField } from "jaklib/formik";
+
+export default function FormikDemo() {
+  return (
+    <Formik initialValues={{ name: "", option: "1" }} onSubmit={() => {}}>
+      <Form>
+        <TextField name="name" label="Name" />
+        <Dropdown name="option" label="Option">
+          <option value="1">Eins</option>
+          <option value="2">Zwei</option>
+        </Dropdown>
+      </Form>
+    </Formik>
   );
 }
 `,
@@ -109,7 +142,7 @@ export default function Page() {
   "app/Counter.tsx": `"use client";
 
 import { useState } from "react";
-import { Button } from "jaklib";
+import { Button } from "jaklib/core";
 
 export default function Counter() {
   const [n, setN] = useState(0);
@@ -117,6 +150,48 @@ export default function Counter() {
 }
 `,
 };
+
+// ---------------------------------------------------------
+// Prueft das vom Consumer tatsaechlich ausgelieferte CSS: Komponentenstile
+// muessen in @layer components liegen und Tailwinds Utilities in @layer
+// utilities. Nur dann schlaegt className="min-h-0" die Komponente.
+// ---------------------------------------------------------
+async function assertLayers(nextDir) {
+  const cssFiles = [];
+  const walk = async (dir) => {
+    for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) await walk(full);
+      else if (entry.name.endsWith(".css")) cssFiles.push(full);
+    }
+  };
+  await walk(path.join(nextDir, "static"));
+
+  const layerOf = (node) => {
+    for (let p = node.parent; p; p = p.parent) {
+      if (p.type === "atrule" && p.name === "layer") return p.params;
+    }
+    return null;
+  };
+
+  let cardLayer = null;
+  let minH0Layer = null;
+  for (const file of cssFiles) {
+    const css = postcss.parse(await fs.readFile(file, "utf8"));
+    css.walkRules((rule) => {
+      if (/(^|,\s*)\.Card_base(?![\w-])/.test(rule.selector)) cardLayer = layerOf(rule);
+      if (/(^|,\s*)\.min-h-0(?![\w-])/.test(rule.selector)) minH0Layer = layerOf(rule);
+    });
+  }
+
+  if (cardLayer !== "components") {
+    throw new Error(`.Card_base liegt in Layer "${cardLayer}", erwartet "components".`);
+  }
+  if (minH0Layer !== "utilities") {
+    throw new Error(`.min-h-0 liegt in Layer "${minH0Layer}", erwartet "utilities".`);
+  }
+  console.log("  .Card_base → components, .min-h-0 → utilities");
+}
 
 // ---------------------------------------------------------
 // Ablauf
@@ -160,6 +235,9 @@ try {
       "next",
       "react",
       "react-dom",
+      "formik",
+      "tailwindcss",
+      "@tailwindcss/postcss",
       "typescript",
       "@types/react",
       "@types/react-dom",
@@ -171,7 +249,10 @@ try {
   step("Consumer bauen (next build)");
   run("npx", ["next", "build"], { cwd: consumerDir });
 
-  console.log(green("\n✔ Consumer-Check bestanden: jaklib lässt sich in einem Next-Projekt bauen."));
+  step("Ausgeliefertes CSS pruefen (Layer-Reihenfolge)");
+  await assertLayers(path.join(consumerDir, ".next"));
+
+  console.log(green("\n✔ Consumer-Check bestanden: Build, core/formik-Imports und CSS-Layer stimmen."));
 } catch (error) {
   failed = true;
   console.error(red(`\n✘ Consumer-Check fehlgeschlagen: ${error.message}`));
