@@ -26,14 +26,16 @@
   "sideEffects": [
     "**/*.css"
   ],
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.mjs",
+      "require": "./dist/core.js"
+    },
+    "./formik": {
+      "types": "./dist/formik.d.ts",
+      "import": "./dist/formik.mjs",
+      "require": "./dist/formik.js"
     },
     "./styles.css": "./dist/index.css"
   },
@@ -43,10 +45,14 @@
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": ">=13"
+    "next": ">=13",
+    "formik": "^2.4.0"
   },
   "peerDependenciesMeta": {
     "next": {
+      "optional": true
+    },
+    "formik": {
       "optional": true
     }
   },
