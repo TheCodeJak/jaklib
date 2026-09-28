@@ -3,7 +3,7 @@ import styles from "./Spinner.module.css";
 export const Spinner = () => {
   return (
     <svg
-      className="h-10 w-10"
+      className="h-7 w-7"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

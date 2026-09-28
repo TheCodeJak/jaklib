@@ -8,15 +8,21 @@ const CLOSE_DURATION = 200; // ms — muss zur CSS-Animation passen
 
 export function Dropdown({
   label,
+  value: controlledValue,
+  initialValue,
   children,
   placeholder,
   onChange,
+  onBlur,
   className,
+  name,
+  error,
 }: DropdownProps) {
   const options = Array.isArray(children) ? children : [children];
-  
-
-  const [value, setValue] = useState(options[0].props.value);
+  const [internalValue, setInternalValue] = useState<string | undefined>(
+    initialValue,
+  );
+  const value = controlledValue ?? internalValue;
   const [open, setOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -30,6 +36,14 @@ export function Dropdown({
       setOpen(false);
       setIsClosing(false);
     }, CLOSE_DURATION);
+  }
+
+  function selectOption(propValue: string) {
+    onChange?.(propValue);
+    if (controlledValue === undefined) {
+      setInternalValue(propValue);
+    }
+    closeDropdown();
   }
 
   useEffect(() => {
@@ -57,14 +71,18 @@ export function Dropdown({
         )}
 
         <button
+          id={fieldId}
+          name={name}
+          type="button"
           className={styles.trigger}
           onClick={() => (open ? closeDropdown() : setOpen(true))}
+          onBlur={onBlur}
           aria-haspopup="listbox"
           aria-expanded={open && !isClosing}
         >
           {selected?.props.children ?? placeholder}
           <span className="w-6 h-6 [&>svg]:w-full [&>svg]:h-full">
-            <ArrowDownSVG color="#ff8904" />
+            <ArrowDownSVG color="var(--primary)" />
           </span>
         </button>
         {(open || isClosing) && (
@@ -73,29 +91,27 @@ export function Dropdown({
             role="listbox"
           >
             {options.map((option) => {
-              const value = option.props.value;
-              const label = option.props.children;
+              const propValue = option.props.value;
+              const optionLabel = option.props.children;
               return (
-              <li
-                key={value}
-                role="option"
-                aria-selected={value === value}
-                className={cn(
-                  styles.option,
-                  value === value && styles.optionSelected,
-                )}
-                onClick={() => {
-                  onChange?.(value);
-                  setValue(value);
-                  closeDropdown();
-                }}
-              >
-                {label}
-              </li>
-            )})}
+                <li
+                  key={propValue}
+                  role="option"
+                  aria-selected={propValue === value}
+                  className={cn(
+                    styles.option,
+                    propValue === value && styles.optionSelected,
+                  )}
+                  onClick={() => selectOption(propValue)}
+                >
+                  {optionLabel}
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>
+      {error && <p className={styles.error}>{error}</p>}
     </div>
   );
 }

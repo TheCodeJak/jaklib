@@ -3,6 +3,7 @@
 import { Avatar } from "@/components/Avatar";
 import { Radio, RadioGroup } from "@/components/Radio/Radio";
 import { Textarea } from "@/components/Textarea";
+import { Dropdown as FormikDropdown } from "@/formik/Dropdown";
 import { TextField as FormikTextField } from "@/formik/TextField";
 import {
   Button,
@@ -10,6 +11,7 @@ import {
   CheckBox,
   Dropdown,
   Modal,
+  Spinner,
   Switch,
   TextField,
 } from "@/index";
@@ -68,23 +70,39 @@ const HomePage = () => {
 
         <Showcase title="Formik">
           <Formik
-            initialValues={{ name: "Jakob" }}
-            validationSchema={
-              yup.object({
-                name: yup.string().required("Name ist erforderlich"),
-              })
-            }
-            onSubmit={(values) => console.log(values)}
+            initialValues={{ name: "Jakob", option: "2" }}
+            validationSchema={yup.object({
+              name: yup.string().required("Name ist erforderlich"),
+              option: yup
+                .string()
+                .required()
+                .test(
+                  "not-one",
+                  "Wert darf nicht 1 sein",
+                  (value) => value !== "1",
+                ),
+            })}
+            onSubmit={async (values) => {
+              await new Promise((resolve) => setTimeout(resolve, 600));
+              console.log(values);
+            }}
           >
-            {() => (
+            {({ isSubmitting }) => (
               <Form>
-                <FormikTextField label="Name" name="name" />
-                <Dropdown label="Wähle Option">
-                  <option value="1">1</option>
-                </Dropdown>
-                <Button type="submit" className="mt-2">
-                  Absenden
-                </Button>
+                <div className="flex gap-4 items-end">
+                  <FormikTextField label="Name" name="name" />
+                  <FormikDropdown label="Wähle Option" name="option">
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                    <option value="3">Option 3</option>
+                  </FormikDropdown>
+                  <Button type="submit" className="mt-2">
+                    <div className="flex gap-2 items-center px-18">
+                      <span>Absenden</span>
+                      {isSubmitting && <Spinner />}
+                    </div>
+                  </Button>
+                </div>
               </Form>
             )}
           </Formik>
@@ -155,10 +173,7 @@ const HomePage = () => {
         </Showcase> */}
 
         <Showcase title="Dropdown">
-          <Dropdown
-            label="Wähle Option"
-            placeholder="Auswählen"
-          >
+          <Dropdown label="Wähle Option" placeholder="Auswählen">
             <option value="a">Option A</option>
             <option value="b">Option B</option>
             <option value="c">Option C</option>
