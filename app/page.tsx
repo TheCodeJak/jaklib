@@ -14,7 +14,7 @@ import {
   Spinner,
   Switch,
   TextField,
-} from "@/index";
+} from "@/components";
 import { Form, Formik } from "formik";
 import { useState, type ReactNode } from "react";
 import * as yup from "yup";
