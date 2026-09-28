@@ -8,18 +8,21 @@ const CLOSE_DURATION = 200; // ms — muss zur CSS-Animation passen
 
 export function Dropdown({
   label,
-  options,
+  children,
   placeholder,
   onChange,
   className,
 }: DropdownProps) {
-  const [value, setValue] = useState(options[0].value);
+  const options = Array.isArray(children) ? children : [children];
+  
+
+  const [value, setValue] = useState(options[0].props.value);
   const [open, setOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const fieldId = label?.toLowerCase().replace(/\s+/g, "-");
-  const selected = options.find((option) => option.value === value);
+  const selected = options.find((option) => option.props.value === value);
 
   function closeDropdown() {
     setIsClosing(true);
@@ -59,7 +62,7 @@ export function Dropdown({
           aria-haspopup="listbox"
           aria-expanded={open && !isClosing}
         >
-          {selected?.label ?? placeholder}
+          {selected?.props.children ?? placeholder}
           <span className="w-6 h-6 [&>svg]:w-full [&>svg]:h-full">
             <ArrowDownSVG color="#ff8904" />
           </span>
@@ -69,24 +72,27 @@ export function Dropdown({
             className={cn(styles.list, isClosing && styles.listClosing)}
             role="listbox"
           >
-            {options.map((option) => (
+            {options.map((option) => {
+              const value = option.props.value;
+              const label = option.props.children;
+              return (
               <li
-                key={option.value}
+                key={value}
                 role="option"
-                aria-selected={option.value === value}
+                aria-selected={value === value}
                 className={cn(
                   styles.option,
-                  option.value === value && styles.optionSelected,
+                  value === value && styles.optionSelected,
                 )}
                 onClick={() => {
-                  onChange?.(option.value);
-                  setValue(option.value);
+                  onChange?.(value);
+                  setValue(value);
                   closeDropdown();
                 }}
               >
-                {option.label}
+                {label}
               </li>
-            ))}
+            )})}
           </ul>
         )}
       </div>
