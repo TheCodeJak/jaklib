@@ -60,11 +60,18 @@ for (const entryName of ["core", "formik"]) {
   }
 }
 
+// In @layer components statt unlayered ausliefern: Tailwinds eigene
+// Layer-Reihenfolge ist theme < base < components < utilities. Landen
+// Komponentenstile unlayered, schlagen sie *jede* Utility-Klasse des
+// Konsumenten (unlayered > jede Layer, unabhängig von Spezifitaet/
+// Ladereihenfolge) — genau das Problem, das className-Overrides wie
+// `min-h-0` sonst wirkungslos macht.
+const moduleCss = moduleCssParts.length
+  ? `@layer components {\n${moduleCssParts.join("\n\n")}\n}\n`
+  : "";
+
 await fs.mkdir(path.dirname(out), { recursive: true });
-await fs.writeFile(
-  out,
-  `${globalCss.trimEnd()}\n\n${moduleCssParts.join("\n\n")}\n`,
-);
+await fs.writeFile(out, `${globalCss.trimEnd()}\n\n${moduleCss}`);
 
 const { size } = await fs.stat(out);
 console.log(`CSS   dist/index.css  ${(size / 1024).toFixed(2)} KB`);
