@@ -3,8 +3,14 @@ import { useId } from "react";
 import styles from "./TextField.module.css";
 import type { TextFieldProps } from "./TextField.types";
 
-export function TextField({ label, name, className, id, error, ...props }: TextFieldProps) {
-  const fieldId = useId()
+export function TextField({
+  label,
+  name,
+  className,
+  error,
+  ...props
+}: TextFieldProps) {
+  const fieldId = useId();
   const errorId = `${fieldId}-error`;
 
   return (
@@ -15,7 +21,12 @@ export function TextField({ label, name, className, id, error, ...props }: TextF
         </label>
       )}
 
-      <input name={name} id={fieldId} className={cn(styles.base, error ? styles.baseError : "", className)} {...props} />
+      <input
+        name={name}
+        id={fieldId}
+        className={cn(styles.base, error ? styles.baseError : "", className)}
+        {...props}
+      />
 
       {error && (
         <p id={errorId} className={styles.error}>

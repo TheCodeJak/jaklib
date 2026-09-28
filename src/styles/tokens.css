@@ -3,9 +3,11 @@
    Komponenten verwenden
    ============================================ */
 :root {
-  /* Brand (Orange) */
-  --brand: #ff8904;
+  /* Brand (Orange) — bewusst einen Tick entsättigt/dunkler als reines
+     #ff8904, damit es als Fläche/Fokus nicht "neongrell" wirkt. */
+  --brand: #e8790d;
   --brand-deep: #ea6c0d;
+  --brand-light: #fdb848;
   --brand-hover: rgba(255, 255, 255, 0.07);
 
   /* Cobalt (Blau-Akzent) */
@@ -36,11 +38,6 @@
   --void-800: #0f1f35;
   --void-700: #162840;
 
-  /* Zinc (echte Neutraltöne für dunkle Flächen, z.B. Secondary im Dark Mode —
-     bewusst getrennt von Void, das einen Blaustich für Sidebar/Akzente trägt) */
-  --zinc-750: #2a2a2a;
-  --zinc-650: #333333;
-
   --white: #ffffff;
 
   /* ============================================
@@ -55,15 +52,24 @@
 
   --primary: var(--brand);
   --primary-hover: var(--brand-deep);
+  --primary-light: var(--brand-light);
   --primary-fg: var(--cream);
-  --primary-shadow: color-mix(in srgb, var(--brand) 30%, transparent);
-  --primary-shadow-hover: color-mix(in srgb, var(--brand) 50%, transparent);
+  /* Elevation statt Farb-Glow: überwiegend dunkles Grau, nur ganz leicht
+     mit der Markenfarbe eingefärbt. */
+  --primary-shadow: color-mix(in srgb, var(--brand) 15%, rgba(0, 0, 0, 0.3));
+  --primary-shadow-hover: color-mix(
+    in srgb,
+    var(--brand) 18%,
+    rgba(0, 0, 0, 0.4)
+  );
   /* Leuchtender Fokus-Ring für Button/TextField/Dropdown/Switch — auf Weiß
      reicht wenig Deckkraft, sonst wirkt er sofort schmutzig-grau. */
   --focus-ring: color-mix(in srgb, var(--brand) 30%, transparent);
 
-  --secondary: var(--ink-100);
-  --secondary-hover: var(--ink-300);
+  /* Neutral, aber mit spürbarer Markenwärme statt totem Grau — bleibt
+     bewusst unter --primary in der Hierarchie, wirkt aber nicht leblos. */
+  --secondary: color-mix(in srgb, var(--ink-100) 92%, var(--brand) 8%);
+  --secondary-hover: color-mix(in srgb, var(--ink-100) 80%, var(--brand) 20%);
   --secondary-fg: var(--ink-900);
 
   --ghost-hover: var(--ink-100);
@@ -170,18 +176,27 @@
 
     --primary: var(--brand);
     --primary-hover: var(--brand-deep);
+    --primary-light: var(--brand-light);
     --primary-fg: var(--cream);
-    --primary-shadow: color-mix(in srgb, var(--brand) 25%, transparent);
-    --primary-shadow-hover: color-mix(in srgb, var(--brand) 40%, transparent);
+    /* Dunkler Hintergrund braucht mehr Deckkraft, um sichtbar zu bleiben —
+       gleiche Idee wie bei --shadow-sm/md/lg im Dark Mode. */
+    --primary-shadow: color-mix(in srgb, var(--brand) 15%, rgba(0, 0, 0, 0.5));
+    --primary-shadow-hover: color-mix(
+      in srgb,
+      var(--brand) 18%,
+      rgba(0, 0, 0, 0.6)
+    );
     /* Höhere Deckkraft als im Light Mode: auf dunklem Grund braucht Orange
        mehr Sättigung, um überhaupt als Leuchten zu erscheinen statt zu
        verschwinden — bewusst eigens kalibriert, keine Invertierung. */
     --focus-ring: color-mix(in srgb, var(--brand) 45%, transparent);
 
     /* Neutral wie im Light Mode (Rolle: gedämpfter Button), keine eigene
-       Akzentfarbe — Cobalt bleibt der Sidebar vorbehalten. */
-    --secondary: var(--zinc-750);
-    --secondary-hover: var(--zinc-650);
+       Akzentfarbe — Cobalt bleibt der Sidebar vorbehalten. Aus --border
+       abgeleitet (statt einer isolierten Extra-Primitive) und mit mehr
+       Markenwärme als der reine Rahmenton, damit es nicht leblos wirkt. */
+    --secondary: color-mix(in srgb, var(--border) 88%, var(--brand) 12%);
+    --secondary-hover: color-mix(in srgb, var(--border) 78%, var(--brand) 22%);
     --secondary-fg: var(--cream);
 
     --ghost-hover: var(--brand-hover);

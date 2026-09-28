@@ -1,3 +1,4 @@
 {
-  "tailwindCSS.experimental.configFile": "src/globals.css"
+  "tailwindCSS.experimental.configFile": "src/globals.css",
+  "css.lint.unknownAtRules": "ignore"
 }

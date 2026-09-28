@@ -36,15 +36,10 @@
 }
 
 .trigger:hover:not(:disabled) {
-  border-radius: var(--radius-xl);
   border: 1px solid var(--primary);
-  box-shadow:
-    0 5px 10px -3px var(--primary-shadow),
-    0 4px 4px -4px var(--primary-shadow);
 }
 
-.trigger:focus-visible {
-  border-radius: var(--radius-xl);
+.trigger[aria-expanded="true"] {
   border: 1px solid var(--primary);
   outline: none;
   box-shadow: 0 0 0 4px var(--focus-ring);
@@ -118,6 +113,6 @@
 }
 
 .optionSelected {
-  background: linear-gradient(to right, var(--primary), #fdb848);
+  background: linear-gradient(to right, var(--primary), var(--primary-light));
   color: var(--primary-fg);
 }
