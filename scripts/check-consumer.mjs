@@ -256,6 +256,9 @@ try {
 } catch (error) {
   failed = true;
   console.error(red(`\n✘ Consumer-Check fehlgeschlagen: ${error.message}`));
+  if (process.env.GITHUB_ACTIONS) {
+    console.log(`::error title=Consumer-Check fehlgeschlagen::${error.message}`);
+  }
 } finally {
   if (keep) {
     console.log(`Temp-Ordner behalten: ${tmp}`);

@@ -109,7 +109,13 @@ if (parsed) {
 
 if (errors.length > 0) {
   console.error("\n\x1b[31m✘ dist/index.css ist fehlerhaft:\x1b[0m");
-  for (const message of [...new Set(errors)]) console.error(`  - ${message}`);
+  for (const message of [...new Set(errors)]) {
+    console.error(`  - ${message}`);
+    // Workflow-Annotation: erscheint direkt in der GitHub-Oberfläche.
+    if (process.env.GITHUB_ACTIONS) {
+      console.log(`::error title=dist/index.css fehlerhaft::${message}`);
+    }
+  }
   process.exit(1);
 }
 console.log("CSS   dist/index.css verifiziert");

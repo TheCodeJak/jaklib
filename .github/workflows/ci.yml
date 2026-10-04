@@ -9,8 +9,18 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  FORCE_COLOR: "1"
+  NEXT_TELEMETRY_DISABLED: "1"
+
+defaults:
+  run:
+    # bash mit pipefail: ein Fehler vor `| tee` bricht den Schritt trotzdem ab.
+    shell: bash
+
 jobs:
   verify:
+    name: Lint, Build, Consumer-Check
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -21,15 +31,91 @@ jobs:
           node-version: 22
           cache: npm
 
-      # `prepare` baut die Lib bereits (tsup + build-css + verify-css).
-      - run: npm ci
+      - name: Umgebung
+        run: |
+          mkdir -p logs
+          echo "commit: $GITHUB_SHA"
+          echo "ref:    $GITHUB_REF"
+          echo "node:   $(node -v)"
+          echo "npm:    $(npm -v)"
 
-      - run: npm run lint
+      # `prepare` baut die Lib bereits (tsup + build-css + verify-css).
+      - name: Abhängigkeiten installieren (npm ci)
+        id: install
+        run: npm ci 2>&1 | tee logs/install.log
+
+      # Die folgenden Schritte laufen auch nach einem Fehler weiter, damit ein
+      # Lauf alle Probleme auf einmal zeigt (nur die Installation ist Voraussetzung).
+      - name: Lint
+        id: lint
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run lint 2>&1 | tee logs/lint.log
 
       # Baut erneut und bricht ab, wenn dist/index.css fehlerhaft ist
       # (Parse-Fehler, Kommentar-Reste, fehlende/unlayered Komponentenklassen).
-      - run: npm run build:lib
+      - name: Lib bauen und CSS verifizieren
+        id: build
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: npm run build:lib 2>&1 | tee logs/build.log
 
       # Frisches Next-Projekt mit Tailwind, jaklib/core + jaklib/formik und
-      # Pruefung der Layer im ausgelieferten CSS.
-      - run: npm run check:consumer
+      # Prüfung der Layer im ausgelieferten CSS.
+      - name: Consumer-Check
+        id: consumer
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: npm run check:consumer 2>&1 | tee logs/consumer.log
+
+      - name: Zusammenfassung
+        if: ${{ always() }}
+        env:
+          INSTALL: ${{ steps.install.outcome }}
+          LINT: ${{ steps.lint.outcome }}
+          BUILD: ${{ steps.build.outcome }}
+          CONSUMER: ${{ steps.consumer.outcome }}
+        run: |
+          label() {
+            case "$1" in
+              success) echo "OK" ;;
+              failure) echo "FEHLGESCHLAGEN" ;;
+              skipped) echo "übersprungen" ;;
+              cancelled) echo "abgebrochen" ;;
+              *) echo "$1" ;;
+            esac
+          }
+          {
+            echo "## CI-Ergebnis"
+            echo
+            echo "| Schritt | Ergebnis |"
+            echo "|---|---|"
+            echo "| Abhängigkeiten installieren | $(label "$INSTALL") |"
+            echo "| Lint | $(label "$LINT") |"
+            echo "| Lib bauen und CSS verifizieren | $(label "$BUILD") |"
+            echo "| Consumer-Check | $(label "$CONSUMER") |"
+            for step in install lint build consumer; do
+              case "$step" in
+                install) outcome="$INSTALL" ;;
+                lint) outcome="$LINT" ;;
+                build) outcome="$BUILD" ;;
+                consumer) outcome="$CONSUMER" ;;
+              esac
+              if [ "$outcome" = "failure" ] && [ -f "logs/$step.log" ]; then
+                echo
+                echo "### Fehler in \`$step\` (letzte 60 Zeilen)"
+                echo
+                echo '```'
+                tail -n 60 "logs/$step.log" | sed 's/\x1b\[[0-9;]*m//g'
+                echo '```'
+              fi
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Vollständige Logs und das gebaute dist/ zum Nachsehen bei Fehlern.
+      - name: Logs hochladen (bei Fehler)
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-logs
+          path: |
+            logs/
+            dist/index.css
+          retention-days: 7

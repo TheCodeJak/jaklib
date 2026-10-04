@@ -47,6 +47,9 @@
   --background: var(--ink-50);
   --surface: var(--white);
   --border: var(--ink-300);
+  /* Zurückhaltender Rahmen für Flächen (Card), die sich nur leicht vom
+     Hintergrund abheben sollen. */
+  --border-subtle: var(--ink-100);
   --text: var(--ink-900);
   --text-muted: var(--ink-600);
 
@@ -171,6 +174,7 @@
     --background: #111212;
     --surface: #1f1f1f;
     --border: #363636;
+    --border-subtle: color-mix(in srgb, var(--border) 55%, var(--surface));
     --text: var(--cream);
     --text-muted: var(--ink-400);
 
